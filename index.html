@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI & Python 實戰知識庫</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Marked.js CDN (解析 Markdown) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+  <!-- 頂部導覽列 -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold text-sky-400">🤖 AI & Python 實戰知識庫</h1>
+      <span class="text-xs bg-sky-950 text-sky-300 px-3 py-1 rounded-full border border-sky-800">AGENTS.md Driven</span>
+    </div>
+  </header>
+
+  <!-- 主內容區 -->
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <h2 class="text-2xl font-bold mb-6 text-slate-200">最新筆記與文章</h2>
+    
+    <!-- 文章卡片網格 -->
+    <div id="article-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- JS 會動態將卡片渲染在這裡 -->
+    </div>
+
+    <!-- 文章閱讀彈窗 (Modal) -->
+    <div id="modal" class="fixed inset-0 bg-black/70 flex items-center justify-center p-4 hidden z-50">
+      <div class="bg-slate-800 border border-slate-700 rounded-xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 relative">
+        <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl font-bold">✕</button>
+        <div id="modal-content" class="prose prose-invert max-w-none text-slate-300">
+          <!-- Markdown 內容會渲染在這裡 -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // 動態載入文章列表
+    fetch('data/articles.json')
+      .then(res => res.json())
+      .then(articles => {
+        const grid = document.getElementById('article-grid');
+        grid.innerHTML = articles.map(art => `
+          <div onclick="loadArticle('${art.file}')" class="bg-slate-800 border border-slate-700/60 rounded-xl p-5 hover:border-sky-500/50 cursor-pointer transition shadow-lg">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-xs bg-sky-900/50 text-sky-300 px-2.5 py-0.5 rounded border border-sky-700/50">${art.category}</span>
+              <span class="text-xs text-slate-400">${art.date}</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-100 mb-2 hover:text-sky-400">${art.title}</h3>
+            <p class="text-sm text-slate-400 line-clamp-2">${art.summary}</p>
+          </div>
+        `).join('');
+      })
+      .catch(err => console.error('無法載入文章資料:', err));
+
+    // 載入並讀取 Markdown 文章
+    function loadArticle(filePath) {
+      fetch(filePath)
+        .then(res => res.text())
+        .then(text => {
+          document.getElementById('modal-content').innerHTML = marked.parse(text);
+          document.getElementById('modal').classList.remove('hidden');
+        });
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

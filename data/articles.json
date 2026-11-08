@@ -1,0 +1,10 @@
+[
+  {
+    "id": "first-note",
+    "title": "我的第一篇 AI Agent 實戰筆記",
+    "category": "AI Agent",
+    "date": "2026-11-08",
+    "summary": "這是一篇測試筆記，展示如何透過 AGENTS.md 建立規範並讓網頁動態讀取 Markdown 檔案。",
+    "file": "content/first-note.md"
+  }
+]
